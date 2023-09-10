@@ -35,10 +35,6 @@ func romanToNorm(arr string) int {
 	return x
 }
 
-//func recursivRoman(x int, rez string) string{
-//	if()
-//}
-
 func toRoman(x int) string {
 	rez := ""
 	element := map[int]string{
@@ -56,7 +52,7 @@ func toRoman(x int) string {
 		if x >= i && "" != element[i] {
 			for n := x / i; n != 0; n-- {
 				rez += element[i]
-				fmt.Println(rez)
+				//fmt.Println(rez)
 				x -= i
 			}
 		}
@@ -67,7 +63,6 @@ func toRoman(x int) string {
 func romanNum(arr []string) {
 	x := romanToNorm(arr[0])
 	y := romanToNorm(arr[2])
-	fmt.Println(x, " ", arr[1], " ", y)
 	switch arr[1] {
 	case "*":
 		fmt.Println(toRoman(x * y))
@@ -76,6 +71,10 @@ func romanNum(arr []string) {
 	case "+":
 		fmt.Println(toRoman(x + y))
 	case "-":
+		if y > x {
+			fmt.Println("Вывод ошибки, так как в римской системе нет отрицательных чисел.")
+			os.Exit(0)
+		}
 		fmt.Println(toRoman(x - y))
 	default:
 		fmt.Println("Y have mistake with operator")
@@ -118,9 +117,7 @@ func normalNum(arr []string) {
 
 func read() {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("l am calculator?:")
 
-	fmt.Print("-> ")
 	text, _ := reader.ReadString('\n')
 	text = strings.Replace(text, "\n", "", -1)
 
@@ -128,11 +125,18 @@ func read() {
 	//fmt.Printf("%q\n", strings.Split(text, " "))
 	texts := strings.Split(text, " ")
 
+	if len(texts) != 3 {
+		fmt.Println("Вывод ошибки, так как формат математической операции " +
+			"не удовлетворяет заданию — два операнда и один оператор (+, -, /, *).")
+		os.Exit(0)
+	}
+
 	textX := texts[0]
 	textY := texts[2]
 
-	if len(texts) != 3 {
-		fmt.Println("Y problem with numbers of inputs")
+	if ((textX[0] == 73 || textX[0] == 86 || textX[0] == 88) && (textY[0] <= 57 && textY[0] >= 48)) ||
+		((textY[0] == 73 || textY[0] == 86 || textY[0] == 88) && (textX[0] <= 57 && textX[0] >= 48)) {
+		fmt.Println("Вывод ошибки, так как используются одновременно разные системы счисления.")
 		os.Exit(0)
 	}
 
@@ -145,7 +149,5 @@ func read() {
 }
 
 func main() {
-
 	read()
-
 }
