@@ -13,23 +13,54 @@ func romanToNorm(arr string) int {
 	x := 0
 	// ASCII I - 73, V - 86, X - 88
 	for i := 0; i < len(arr); i++ {
-		if arr[i] == 73 && x < 3 {
-			x = x + 1
+		if arr[i] == 77 { // == M(1000)
+			if x < 1000 && x != 0 {
+				x = 1000 - x
+			} else {
+				x += 1000
+			}
 		}
-		if arr[i] == 86 && x == 0 {
-			x = 5
+		if arr[i] == 68 { // == D(500)
+			if x < 500 && x != 0 {
+				x = 500 - x
+			} else {
+				x += 500
+			}
 		}
-		if arr[i] == 86 && x == 1 {
-			x = 4
+		if arr[i] == 67 { // == C(100)
+			if x < 100 && x != 0 {
+				x = 100 - x
+			} else {
+				x += 100
+			}
 		}
-		if arr[i] == 73 && x >= 5 {
-			x += 1
+		if arr[i] == 76 { // == L(50)
+			if x < 50 && x != 0 {
+				x = 50 - x
+			} else {
+				x += 50
+			}
 		}
-		if arr[i] == 88 && x == 0 {
-			x = 10
+		if arr[i] == 88 { // == X(10)
+			if x < 10 && x != 0 {
+				x = 10 - x
+			} else {
+				x += 10
+			}
 		}
-		if arr[i] == 88 && x == 1 {
-			x = 10 - 1
+		if arr[i] == 86 { // == V(5)
+			if x < 5 && x != 0 {
+				x = 5 - x
+			} else {
+				x += 5
+			}
+		}
+		if arr[i] == 73 { // == I(1)
+			if false {
+
+			} else {
+				x += 1
+			}
 		}
 	}
 	return x
@@ -37,24 +68,47 @@ func romanToNorm(arr string) int {
 
 func toRoman(x int) string {
 	rez := ""
-	element := map[int]string{
-		1:    "I",
-		4:    "IV",
-		5:    "V",
-		10:   "X",
-		50:   "L",
-		100:  "C",
-		500:  "D",
-		1000: "M",
-	}
-	// ASCII I(1) - 73, V(5) - 86, X(10) - 88, L(50) - 76, C(100) - 67, D(500) - 68, M(1000) - 77
-	for i := 1000; x != 0; i -= 1 {
-		if x >= i && "" != element[i] {
-			for n := x / i; n != 0; n-- {
-				rez += element[i]
-				//fmt.Println(rez)
-				x -= i
+	for x != 0 {
+		if x >= 90 && x <= 130 {
+			if x == 100 {
+				x -= 100
+				rez += "C"
+			} else {
+				x -= 90
+				rez += "XC"
 			}
+		}
+		if x >= 40 && x < 90 {
+			if x < 50 {
+				x -= 40
+				rez += "XL"
+			} else {
+				x -= 50
+				rez += "L"
+			}
+		}
+		if x >= 9 && x < 40 {
+			if x == 9 {
+				x -= 9
+				rez += "IX"
+			} else {
+				x -= 10
+				rez += "X"
+			}
+
+		}
+		if x >= 4 && x < 9 {
+			if x == 4 {
+				x -= 4
+				rez += "IV"
+			} else {
+				x -= 5
+				rez += "V"
+			}
+		}
+		if x > 0 && x < 4 {
+			x -= 1
+			rez += "I"
 		}
 	}
 	return rez
@@ -62,7 +116,14 @@ func toRoman(x int) string {
 
 func romanNum(arr []string) {
 	x := romanToNorm(arr[0])
+	//fmt.Println(x)
 	y := romanToNorm(arr[2])
+	//fmt.Println(y)
+	if x > 10 || x < 1 || y > 10 || y < 1 {
+		fmt.Println("Принимаются числа от I до X")
+		os.Exit(0)
+	}
+	//fmt.Println(y)
 	switch arr[1] {
 	case "*":
 		fmt.Println(toRoman(x * y))
@@ -71,13 +132,17 @@ func romanNum(arr []string) {
 	case "+":
 		fmt.Println(toRoman(x + y))
 	case "-":
+		if (x - y) == 0 {
+			fmt.Println("Ошибка, нет нуля в римских числах")
+		}
 		if y > x {
 			fmt.Println("Вывод ошибки, так как в римской системе нет отрицательных чисел.")
 			os.Exit(0)
 		}
 		fmt.Println(toRoman(x - y))
+
 	default:
-		fmt.Println("Y have mistake with operator")
+		fmt.Println("Ошибка с операторами")
 	}
 }
 
@@ -92,12 +157,8 @@ func normalNum(arr []string) {
 		log.Fatal(errY)
 	}
 
-	if x > 10 {
-		fmt.Println("Y give x more than 10")
-		os.Exit(0)
-	}
-	if y > 10 {
-		fmt.Println("Y give y more than 10")
+	if x > 10 || x < 1 || y > 10 || y < 1 {
+		fmt.Println("Принимаются числа от 1 до 10")
 		os.Exit(0)
 	}
 
@@ -115,7 +176,7 @@ func normalNum(arr []string) {
 	}
 }
 
-func read() {
+func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	text, _ := reader.ReadString('\n')
@@ -140,14 +201,10 @@ func read() {
 		os.Exit(0)
 	}
 
-	//ASCII I - 73, V - 86, X - 88
-	if (textX[0] == 73 || textX[0] == 86 || textX[0] == 88) && (textY[0] == 73 || textY[0] == 86 || textY[0] == 88) {
+	//ASCII I - 73, V - 86, X - 88, L -  76
+	if (textX[0] == 73 || textX[0] == 86 || textX[0] == 88 || textX[0] == 76) && (textY[0] == 73 || textY[0] == 86 || textY[0] == 88 || textY[0] == 76) {
 		romanNum(texts)
 	} else {
 		normalNum(texts)
 	}
-}
-
-func main() {
-	read()
 }
