@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -11,11 +10,15 @@ import (
 
 func romanToNorm(arr string) int {
 	x := 0
+	V := 0
+	I := 0
 	// ASCII I - 73, V - 86, X - 88
 	for i := 0; i < len(arr); i++ {
+		// Для проверки корректности ввода
 		if arr[i] == 77 { // == M(1000)
 			if x < 1000 && x != 0 {
 				x = 1000 - x
+
 			} else {
 				x += 1000
 			}
@@ -42,25 +45,40 @@ func romanToNorm(arr string) int {
 			}
 		}
 		if arr[i] == 88 { // == X(10)
-			if x < 10 && x != 0 {
-				x = 10 - x
+			I = 0
+			V = 0
+			if x == 1 {
+				x = 9
+				break
+			} else if x == 0 {
+				x = 10
+				break
 			} else {
-				x += 10
+				x = 0
+				fmt.Println("Не корректно введено число римской системы исчесления")
+				break
 			}
 		}
 		if arr[i] == 86 { // == V(5)
-			if x < 5 && x != 0 {
+			I = 0
+			if x == 0 {
+				x += 5
+				V += 1
+			} else if x == 1 {
 				x = 5 - x
 			} else {
-				x += 5
+				fmt.Println("Не корректно введено число римской системы исчесления")
+				return 0
 			}
 		}
 		if arr[i] == 73 { // == I(1)
-			if false {
-
-			} else {
-				x += 1
-			}
+			x += 1
+			I += 1
+		}
+		if I == -1 || I == 4 || V == 2 {
+			fmt.Println("Не корректно введено число римской системы исчесления")
+			x = 0
+			break
 		}
 	}
 	return x
@@ -151,10 +169,9 @@ func normalNum(arr []string) {
 	y, errY := strconv.Atoi(arr[2])
 
 	if errX != nil {
-		log.Fatal(errX)
-	}
-	if errY != nil {
-		log.Fatal(errY)
+		fmt.Println("Вывод ошибки, так как первый оператор не удовлетворяет заданию")
+	} else if errY != nil {
+		fmt.Println("Вывод ошибки, так как второй оператор не удовлетворяет заданию")
 	}
 
 	if x > 10 || x < 1 || y > 10 || y < 1 {
